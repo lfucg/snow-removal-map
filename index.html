@@ -53,7 +53,8 @@
 <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
 <script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
-  
+
+//legend
 <script
     src="https://code.jquery.com/jquery-1.12.4.min.js"
     integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
@@ -65,31 +66,20 @@
         bounds = L.latLngBounds(southWest, northEast);  
 
     var map = new L.map("map",{
-        zoomControl: false,
+        zoomControl: false, 
         scrollWheelZoom: false
-        })
-        L.esri.basemapLayer("Gray").addTo(map);
+    });
+
+    map.fitBounds(bounds);  
   
-    map.fitBounds(bounds);
-  
-    var searchControl = L.esri.Geocoding.geosearch({
-        position: 'topright',
-        expanded: true,
-        searchBounds: bounds,
-        providers: [
-            L.esri.Geocoding.arcgisOnlineProvider({
-                categories: ['Address', 'Populated Place','POI' ]
-            })
-        ]
-    }).addTo(map);
+    L.esri.basemapLayer("Gray").addTo(map);
   
     var localGrayBase = L.esri.tiledMapLayer({
         url: 'http://maps.lexingtonky.gov/lfucggis/rest/services/basemap_grayscale/MapServer',
     }).addTo(map)
 
     var snowPriorityMs = L.esri.tiledMapLayer({
-        url: 'https://maps.lexingtonky.gov/lfucggis/rest/services/snowremoval_test/MapServer',
-        opacity: 1
+        url: 'https://maps.lexingtonky.gov/lfucggis/rest/services/snowremoval_test/MapServer'
     })
     .addTo(map);
   
@@ -100,6 +90,17 @@
   
     var labelsMs = L.esri.tiledMapLayer({
         url: "https://maps.lexingtonky.gov/lfucggis/rest/services/labels/MapServer"
+    }).addTo(map);
+   
+    var searchControl = L.esri.Geocoding.geosearch({
+        position: 'topright',
+        expanded: true,
+        searchBounds: bounds,
+        providers: [
+            L.esri.Geocoding.arcgisOnlineProvider({
+                categories: ['Address', 'Populated Place','POI' ]
+            })
+        ]
     }).addTo(map);
   
     var legendItem = function(key, color) {
