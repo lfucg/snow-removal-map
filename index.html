@@ -1,0 +1,140 @@
+<html>
+<head>
+  
+    <title>LFUCG Snow Removal</title>
+  
+    <meta charset=utf-8 />
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <!-- Load Leaflet from CDN-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet-src.js"></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.0.4"></script>
+  
+    <style>
+        body { margin:0; padding:0; }
+        #map { position: absolute; top:0; bottom:0; right:0; left:0; }
+    </style>
+  
+    <style>
+        .legend {
+            background-color: white;
+            padding: 10px;
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        .legend-items {
+            display: none; /l* click to show */
+        }
+        .legend-item {
+            padding-top: 10px;
+        }
+    </style>
+  
+</head>
+<body>
+
+<div id="map"></div>   
+
+//search  
+<link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.1.4/dist/esri-leaflet-geocoder.css">
+<script src="https://unpkg.com/esri-leaflet-geocoder@2.1.4"></script>
+
+//home button
+<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
+<script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
+  
+<script
+    src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+    crossorigin="anonymous"></script>
+  
+<script>
+    var southWest = L.latLng(37.844628, -84.659246),
+        northEast = L.latLng(38.211523, -84.28272),
+        bounds = L.latLngBounds(southWest, northEast);  
+
+    var map = new L.map("map",{
+        zoomControl: false,
+        scrollWheelZoom: false
+        })
+        .fitBounds(bounds);
+        L.esri.basemapLayer("Gray").addTo(map);
+  
+    var searchControl = L.esri.Geocoding.geosearch({
+        position: 'topright',
+        expanded: true,
+        searchBounds: bounds,
+        providers: [
+            L.esri.Geocoding.arcgisOnlineProvider({
+                categories: ['Address', 'Populated Place','POI' ]
+            })
+        ]
+    }).addTo(map);
+
+    var snowPriorityMs = L.esri.tiledMapLayer({
+        url: "https://maps.lexingtonky.gov/lfucggis/rest/services/snowremoval_test/MapServer",
+        opacity: 1
+    }).addTo(map);
+  
+    var overlayMs = L.esri.dynamicMapLayer({
+        url: "https://maps.lexingtonky.gov/lfucggis/rest/services/overlay/MapServer",
+        opacity: 0.5
+    }).addTo(map);
+  
+    var labelsMs = L.esri.tiledMapLayer({
+        url: "https://maps.lexingtonky.gov/lfucggis/rest/services/labels/MapServer"
+    }).addTo(map);
+  
+    var legendItem = function(key, color) {
+        return '<div class="legend-item"><i style="background:' + color + '"></i> ' + key + '</div>';
+    }
+        
+    var addLegend = function(map) {
+        var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'legend');
+            div.innerHTML += '<div class="legend-toggle-container"><a href="#" class="legend-toggle">Legend</a></div>';
+            var items = L.DomUtil.create('div', 'legend-items');
+            items.innerHTML += legendItem('Collection in Progress', 'green');
+            items.innerHTML += legendItem('Collection Next in Queue', 'yellow');
+            items.innerHTML += legendItem('Collection Pending Assignment', 'red');
+            items.innerHTML += legendItem('Collection Completed', '#7c90f2');
+            items.innerHTML += legendItem('Does Not Receive Leaf Collection', 'white');
+            $(div).append(items);
+            return div;
+        };
+
+        legend.addTo(map);
+        $('.legend-toggle').click(function(e) {
+            e.preventDefault();
+            $('.legend-items').toggle();
+        });
+    }
+
+    addLegend(map);
+  
+    // make a bar with the buttons
+        var zoomBar = L.easyBar([
+            L.easyButton( '<big>+</big>',  function(control, map){map.setZoom(map.getZoom()+1);}),
+            L.easyButton( 'fa-home fa-lg', function(control, map){map.fitBounds(bounds);}),
+            L.easyButton( '<big>-</big>',  function(control, map){map.setZoom(map.getZoom()-1);}),
+        ]);
+
+    // add it to the map
+    zoomBar.addTo(map);
+</script>
+
+</body>
+</html>
