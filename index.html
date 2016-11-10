@@ -68,8 +68,9 @@
         zoomControl: false,
         scrollWheelZoom: false
         })
-        .fitBounds(bounds);
         L.esri.basemapLayer("Gray").addTo(map);
+  
+    map.fitBounds(bounds);
   
     var searchControl = L.esri.Geocoding.geosearch({
         position: 'topright',
@@ -81,11 +82,16 @@
             })
         ]
     }).addTo(map);
+  
+    var localGrayBase = L.esri.tiledMapLayer({
+        url: 'http://maps.lexingtonky.gov/lfucggis/rest/services/basemap_grayscale/MapServer',
+    }).addTo(map)
 
     var snowPriorityMs = L.esri.tiledMapLayer({
-        url: "https://maps.lexingtonky.gov/lfucggis/rest/services/snowremoval_test/MapServer",
+        url: 'https://maps.lexingtonky.gov/lfucggis/rest/services/snowremoval_test/MapServer',
         opacity: 1
-    }).addTo(map);
+    })
+    .addTo(map);
   
     var overlayMs = L.esri.dynamicMapLayer({
         url: "https://maps.lexingtonky.gov/lfucggis/rest/services/overlay/MapServer",
@@ -99,7 +105,7 @@
     var legendItem = function(key, color) {
         return '<div class="legend-item"><i style="background:' + color + '"></i> ' + key + '</div>';
     }
-        
+    
     var addLegend = function(map) {
         var legend = L.control({position: 'bottomright'});
 
@@ -107,11 +113,10 @@
             var div = L.DomUtil.create('div', 'legend');
             div.innerHTML += '<div class="legend-toggle-container"><a href="#" class="legend-toggle">Legend</a></div>';
             var items = L.DomUtil.create('div', 'legend-items');
-            items.innerHTML += legendItem('Collection in Progress', 'green');
-            items.innerHTML += legendItem('Collection Next in Queue', 'yellow');
-            items.innerHTML += legendItem('Collection Pending Assignment', 'red');
-            items.innerHTML += legendItem('Collection Completed', '#7c90f2');
-            items.innerHTML += legendItem('Does Not Receive Leaf Collection', 'white');
+            items.innerHTML += legendItem('Rank 1', '#8c3836');
+            items.innerHTML += legendItem('Rank 2', '#0057a8');
+            items.innerHTML += legendItem('Rank 3', '#8cb369');
+            items.innerHTML += legendItem('Rank 4', '#e0b111');
             $(div).append(items);
             return div;
         };
