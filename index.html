@@ -61,10 +61,12 @@
     crossorigin="anonymous"></script>
   
 <script>
+    //create variable for bounding coordinates of fayette county envelope
     var southWest = L.latLng(37.844628, -84.659246),
         northEast = L.latLng(38.211523, -84.28272),
         bounds = L.latLngBounds(southWest, northEast);  
 
+    //set up map and add data
     var map = new L.map("map",{
         zoomControl: false, 
         scrollWheelZoom: false
@@ -92,6 +94,7 @@
         url: "https://maps.lexingtonky.gov/lfucggis/rest/services/labels/MapServer"
     }).addTo(map);
    
+    //create search control with results from county envelope
     var searchControl = L.esri.Geocoding.geosearch({
         position: 'topright',
         expanded: true,
@@ -103,6 +106,55 @@
         ]
     }).addTo(map);
   
+    // create snow removal popup
+    var results = L.layerGroup().addTo(map);
+
+    map.on('click', function (e) {
+        displayStatus(e.latlng);
+    });
+
+    var displaySearchResults = function(data, latlng) {
+        displayStatus(data.results[0].latlng);
+    }
+
+    var displayStatus = function(latlng) {
+        results.clearLayers();
+
+        snowPriorityMs.identify()
+            .returnGeometry(false)
+            //.tolerance(0)
+            .on(map)
+            .at(latlng)
+            .run(function(error, featureCollection) {
+                var snow;
+                $.each(featureCollection.features, function(index, feature) {
+                    if (feature.layerId === 6) { snow = feature.properties['SNOW']; }
+                });
+                showDatePopup(map, latlng, snow);
+            });
+        }
+
+    var showDatePopup = function(map, addressLatLng, snow) {
+        if (!snow || snow === 'Null') {
+            return false;
+        } else {
+            var snowLanguage = '<h3>' + snow + '</h3>';
+            snow = snowLanguage
+        }
+        var popup = L.popup({
+            closeButton: true,
+            })
+            .setLatLng(addressLatLng)
+            .setContent(snow)
+            .openOn(map);
+     
+        map.setView(addressLatLng);
+        setTimeout(function() {
+            map.panBy(new L.Point(0, -100));
+        }, 500);
+    };
+  
+    //add legend
     var legendItem = function(key, color) {
         return '<div class="legend-item"><i style="background:' + color + '"></i> ' + key + '</div>';
     }
@@ -131,14 +183,13 @@
 
     addLegend(map);
   
-    // make a bar with the buttons
+    // make a bar with navigation buttons
         var zoomBar = L.easyBar([
             L.easyButton( '<big>+</big>',  function(control, map){map.setZoom(map.getZoom()+1);}),
             L.easyButton( 'fa-home fa-lg', function(control, map){map.fitBounds(bounds);}),
             L.easyButton( '<big>-</big>',  function(control, map){map.setZoom(map.getZoom()-1);}),
         ]);
 
-    // add it to the map
     zoomBar.addTo(map);
 </script>
 
