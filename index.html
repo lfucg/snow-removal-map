@@ -153,9 +153,9 @@
         }, 500);
     };
   
-    //add legend
-    var legendItem = function(key, color) {
-        return '<div class="legend-item"><i style="background:' + color + '"></i> ' + key + '</div>';
+  
+        var legendItem = function(key, bgcolor, brstyle, brcolor) {
+        return '<div class="legend-item"><i style="background: ' + bgcolor + '; border-style: ' + brstyle + '; border-color: ' + brcolor + ';"></i> ' + key + '</div>';
     }
     
     var addLegend = function(map) {
@@ -165,10 +165,14 @@
             var div = L.DomUtil.create('div', 'legend');
             div.innerHTML += '<div class="legend-toggle-container"><a href="#" class="legend-toggle">Legend</a></div>';
             var items = L.DomUtil.create('div', 'legend-items');
-            items.innerHTML += legendItem('Rank 1', '#8c3836');
-            items.innerHTML += legendItem('Rank 2', '#0057a8');
-            items.innerHTML += legendItem('Rank 3', '#8cb369');
-            items.innerHTML += legendItem('Rank 4', '#e0b111');
+            //items.innerHTML += legendItem(key, background color, border style, border color);
+            items.innerHTML += legendItem('Rank 1', '#9F5C5B', 'none', 'none');
+            items.innerHTML += legendItem('Rank 2', '#2F75B5', 'none', 'none');
+            items.innerHTML += legendItem('Rank 3', '#9EBE83', 'none', 'none');
+            items.innerHTML += legendItem('Rank 4', '#E2BC3D', 'none', 'none');
+            items.innerHTML += legendItem('Parks Snow Removal', '#E2BC3D', 'dotted', 'black');
+            items.innerHTML += legendItem('Rural Snow Removal', 'none', 'dotted', '#E2BC3D');
+            items.innerHTML += legendItem('State Snow Removal', 'none', 'dotted', '#979797');
             $(div).append(items);
             return div;
         };
