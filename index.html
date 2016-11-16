@@ -79,7 +79,7 @@
 
     var snowPriorityMs = L.esri.tiledMapLayer({
         url: 'https://maps.lexingtonky.gov/lfucggis/rest/services/snowremoval_test/MapServer',
-        opacity: 0.8
+        opacity: 1
     })
     .addTo(map);
   
@@ -90,7 +90,7 @@
   
     var labelsMs = L.esri.tiledMapLayer({
         url: "https://maps.lexingtonky.gov/lfucggis/rest/services/labels/MapServer",
-     opacity: 0.6
+     opacity: 0.8
     }).addTo(map);
    
     //create search control with results from county envelope
@@ -127,7 +127,7 @@
             .run(function(error, featureCollection) {
                 var snow;
                 $.each(featureCollection.features, function(index, feature) {
-                    if (feature.layerId === 6) { snow = feature.properties['SNOW'], roadname = feature.properties['ANNO']; }
+                    if (feature.layerId === 7) { snow = feature.properties['SNOW'], roadname = feature.properties['ANNO']; }
                 });
                 showSnowPopup(map, latlng, snow);
             });
