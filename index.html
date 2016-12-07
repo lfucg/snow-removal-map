@@ -79,7 +79,7 @@
 
     var snowPriorityMs = L.esri.tiledMapLayer({
         url: 'https://maps.lexingtonky.gov/lfucggis/rest/services/snowremoval_test/MapServer',
-        opacity: 1
+        opacity: 0.6
     })
     .addTo(map);
   
@@ -90,7 +90,7 @@
   
     var labelsMs = L.esri.tiledMapLayer({
         url: "https://maps.lexingtonky.gov/lfucggis/rest/services/labels_test/MapServer",
-     opacity: 1
+     opacity: 0.9
     }).addTo(map);
    
     //create search control with results from county envelope
