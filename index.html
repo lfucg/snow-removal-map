@@ -42,16 +42,16 @@
 
 <div id="map"></div>   
 
-//search  
+<!-- search   -->
 <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.1.4/dist/esri-leaflet-geocoder.css">
 <script src="https://unpkg.com/esri-leaflet-geocoder@2.1.4"></script>
 
-//home button
+<!-- home button -->
 <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
 <script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
 
-//legend and popup
+<!-- legend and popup -->
 <script
     src="https://code.jquery.com/jquery-1.12.4.min.js"
     integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
@@ -125,15 +125,15 @@
             .on(map)
             .at(latlng)
             .run(function(error, featureCollection) {
-                var snow;
+                var snow, roadname;
                 $.each(featureCollection.features, function(index, feature) {
                     if (feature.layerId === 7) { snow = feature.properties['SNOW'], roadname = feature.properties['ANNO']; }
                 });
-                showSnowPopup(map, latlng, snow);
+                showSnowPopup(map, latlng, snow, roadname);
             });
         }
 
-    var showSnowPopup = function(map, addressLatLng, snow) {
+    var showSnowPopup = function(map, addressLatLng, snow, roadname) {
         if (!snow || snow === 'Null') {
             return false;
         } else {
